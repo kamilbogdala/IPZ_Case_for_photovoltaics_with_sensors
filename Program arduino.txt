@@ -1,0 +1,59 @@
+#include <Servo.h>
+Servo servo;
+const int temp1 = A0;
+//int temp2 = A1;
+float napiecie1, stopnie1;
+const int button = 2;
+int stan = 0;
+const int buzzer = 10;
+int tg = 45;
+int alarm = 0;
+
+void setup() {
+  Serial.begin(9600);
+  delay(100);
+  pinMode(13,OUTPUT);
+  servo.attach(9);
+  servo.write(30);
+  pinMode(button,INPUT);
+  pinMode(buzzer,OUTPUT);
+
+}
+
+void loop() {
+
+ stan = digitalRead(button);
+ int odczyt1 = analogRead(temp1);
+ napiecie1 = (odczyt1 * 5.0)/1024.0;
+ stopnie1 = (napiecie1 - 0.5)*100.0;
+ if(stopnie1 >= tg || alarm == 1)
+ {
+   digitalWrite(13,HIGH);
+   servo.write(90);
+   tone(buzzer,1000);
+   alarm = 1;
+   
+ }
+
+
+ 
+  Serial.print("\nnapiecie1: ");
+  Serial.print(napiecie1);
+  Serial.print("\ntemperatura1: ");
+  Serial.print(stopnie1);
+
+  delay(300);
+
+   stan = digitalRead(button); 
+  
+  
+  if(stan == HIGH)
+  {
+    digitalWrite(13,LOW);
+    servo.write(30);
+    digitalWrite(button,LOW);
+    noTone(buzzer);
+    alarm = 0;
+  }
+
+}
